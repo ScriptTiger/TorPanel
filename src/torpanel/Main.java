@@ -1,49 +1,65 @@
 package torpanel;
 
-// Main standard javafx fxml deps
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+// Main standard swing deps
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.event.*;
 
 // Main file reader deps
 import java.io.*;
-
-// Main additional type deps
-import javafx.scene.paint.Color;
-
-// Alert deps
-import javafx.scene.control.*;
-import javafx.scene.control.Alert.AlertType;
 
 // TorConnector deps
 import java.net.*;
 import java.io.*;
 
-public class Main extends Application {
+public class Main extends JPanel {
+	private static TorConnector torConnector;
+	private static JLabel status;
+	private static JButton newnym;
+	private static JButton reload;
 
-	private TorConnector torConnector;
-	private Controller controller;
+	private Main() {
 
-	@Override
-	public void start(Stage mainStage) {
+		// JFrame properties
+		setPreferredSize(new Dimension (220, 80));
+		setLayout(null);
 
-		Parent parent = null;
+		// Status label
+		status = new JLabel("Disconnected", SwingConstants.CENTER);
+		add(status);
+		status.setBounds(0, 0, 220, 50);
+		status.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		status.setForeground(Color.RED);
 
-		// Load fxml
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("/torpanel/gui/main.fxml"));
-		try {
-			Parent tryParent = loader.load();
-			parent = tryParent;
-		} catch (Exception err) {new ErrorDialog(err.getMessage());}
+		// New identity button
+		newnym = new JButton("New Identity");
+		add(newnym);
+		newnym.setBounds(5, 50, 105, 25);
+		newnym.setFont(new Font("SansSerif", Font.BOLD, 12));
+		newnym.addActionListener(e -> torConnector.newnym());
+
+		// Reload button
+		reload = new JButton("Reload");
+		add(reload);
+		reload.setBounds(110, 50, 105, 25);
+		reload.setFont(new Font("SansSerif", Font.BOLD, 12));
+		reload.addActionListener(e -> torConnector.reload());
+	}
+
+	public static void main (String[] args) {
+
+		// Construct and set up jFrame
+		JFrame jFrame = new JFrame("TorPanel");
+		jFrame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
+		jFrame.getContentPane().add (new Main());
+		jFrame.pack();
+		jFrame.setAlwaysOnTop(true);
+		jFrame.setResizable(false);
+		jFrame.setLocationRelativeTo(null);
 
 		// Construct torConnector
-		torConnector = new TorConnector(mainStage);
-
-		// Get controller and share torConnector with it
-		controller = loader.getController();
-		controller.setTorConnector(torConnector);
+		torConnector = new TorConnector();
 
 		// Read configuration from torpanel.conf file if it exists
 		try {
@@ -69,53 +85,32 @@ public class Main extends Application {
 			reader.close();
 		} catch (Exception err) {}
 
-		// Finish setting the mainStage and show it
-		mainStage.setTitle("TorPanel");
-		mainStage.setAlwaysOnTop(true);
-		mainStage.setResizable(false);
-		mainStage.setScene(new Scene(parent));
-		mainStage.show();
+		// Show jFrame
+		jFrame.setVisible(true);
 
 		// Set the connection status
-		setStatus();
-	}
-
-	public static void main(String[] args) {launch(args);}
-
-	private void setStatus() {
 		String version = torConnector.getVersion();
 		if (version != null && !version.equals("")) {
-			controller.setStatusText(torConnector.getHost()+":"+torConnector.getPort()+"\n"+version);
-			controller.setStatusFill(Color.GREEN);
+			status.setText("<html><center>"+torConnector.getHost()+":"+torConnector.getPort()+"<br/>"+version+"</html>");
+			status.setForeground(Color.GREEN);
 		}
 	}
 }
 
 class ErrorDialog {
-
-	// Constructor for a child alert
-	public ErrorDialog(String msg, Stage stage) {
-		Alert alert = new Alert(AlertType.ERROR, msg, ButtonType.OK);
-		alert.initOwner(stage);
-		alert.show();
-	}
-
-	// Constructor for a stand-alone alert
 	public ErrorDialog(String msg) {
-		Alert alert = new Alert(AlertType.ERROR, msg, ButtonType.OK);
-		alert.show();
+		JOptionPane optionPane = new JOptionPane(msg, JOptionPane.ERROR_MESSAGE);
+		JDialog dialog = optionPane.createDialog("Error");
+		dialog.setAlwaysOnTop(true);
+		dialog.setVisible(true);
 	}
 }
 
 class TorConnector {
 
-	private Stage mainStage;
 	private String host = "127.0.0.1";
 	private int port = 9051;
 	private String secret = "";
-
-	// Constructor
-	public TorConnector(Stage mainStage) {this.mainStage = mainStage;}
 
 	// Setters
 	public void setHost(String host) {this.host = host;}
@@ -173,7 +168,7 @@ class TorConnector {
 			tryWriter.println("authenticate \""+secret+"\"");
 			if (!tryReader.readLine().equals("250 OK")) {
 				trySocket.close();
-				new ErrorDialog("Failed to authenticate", mainStage);
+				new ErrorDialog("Failed to authenticate");
 				return null;
 			} else {
 				socket = trySocket;
@@ -182,7 +177,7 @@ class TorConnector {
 			}
 		
 		} catch (Exception err) {
-			new ErrorDialog(err.getMessage(), mainStage);
+			new ErrorDialog(err.getMessage());
 			return null;
 		}
 		return new SocketInfo(socket, reader, writer);

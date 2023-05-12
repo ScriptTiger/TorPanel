@@ -1,7 +1,5 @@
 module torpanel {
-	requires javafx.fxml;
-	requires javafx.controls;
+	requires transitive java.desktop;
 
-	opens torpanel to javafx.fxml;
 	exports torpanel;
 }
