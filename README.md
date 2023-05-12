@@ -4,7 +4,7 @@
 A small Tor controller widget that stays conveniently on top and out of the way with a minimal footprint while you go about your activities.
 
 **TorPanel.jar**  
-Recommended if you are running JDK/JRE 8, 9, or 10. If your JDK/JRE is higher than version 10, you will need to link to the JavaFX SDK manually, or use one of stand-alone app images below.
+Recommended if you are running JDK/JRE 8, 9, or 10. If your JDK/JRE is higher than version 10, you will need to link to the JavaFX SDK manually, or use one of the stand-alone app images below.
 
 **TorPanel-Windows.zip**  
 Supported by 64-bit Windows.
