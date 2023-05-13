@@ -21,9 +21,10 @@ public class Main extends JPanel {
 
 	private Main() {
 
-		// JFrame properties
+		// JPanel properties
 		setPreferredSize(new Dimension (220, 80));
 		setLayout(null);
+		setBackground(Color.WHITE);
 
 		// Status label
 		status = new JLabel("Disconnected", SwingConstants.CENTER);
