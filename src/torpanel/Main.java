@@ -11,7 +11,6 @@ import java.io.*;
 
 // TorConnector deps
 import java.net.*;
-import java.io.*;
 
 public class Main extends JPanel {
 	private static TorConnector torConnector;
@@ -22,7 +21,7 @@ public class Main extends JPanel {
 	private Main() {
 
 		// JPanel properties
-		setPreferredSize(new Dimension (220, 80));
+		setPreferredSize(new Dimension(220, 80));
 		setLayout(null);
 		setBackground(Color.WHITE);
 
@@ -48,12 +47,12 @@ public class Main extends JPanel {
 		reload.addActionListener(e -> torConnector.reload());
 	}
 
-	public static void main (String[] args) {
+	public static void main(String[] args) {
 
 		// Construct and set up jFrame
 		JFrame jFrame = new JFrame("TorPanel");
-		jFrame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-		jFrame.getContentPane().add (new Main());
+		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		jFrame.getContentPane().add(new Main());
 		jFrame.pack();
 		jFrame.setAlwaysOnTop(true);
 		jFrame.setResizable(false);
