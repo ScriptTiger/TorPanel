@@ -3,12 +3,6 @@
 # TorPanel
 A small Tor controller widget that stays conveniently on top and out of the way with a minimal footprint while you go about your activities.
 
-**TorPanel-8.jar**  
-Supported by JDK/JRE 8+ (suitable for most users).
-
-**TorPanel-17.jar**  
-Supported by JDK/JRE 17+.
-
 By default, TorPanel will connect to 127.0.0.1:9051 and attempt to authenticate to Tor without a password. To change the default behavior, you can create a `torpanel.conf` file in the working directory and include key-value pairs for `host`, `port`, and `secret`, delimited by a `=` (i.e. `secret=password`).
 
 # More About ScriptTiger
