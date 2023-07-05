@@ -15,8 +15,6 @@ import java.net.*;
 public class Main extends JPanel {
 	private static TorConnector torConnector;
 	private static JLabel status;
-	private static JButton newnym;
-	private static JButton reload;
 
 	private Main() {
 
@@ -33,14 +31,14 @@ public class Main extends JPanel {
 		status.setForeground(Color.RED);
 
 		// New identity button
-		newnym = new JButton("New Identity");
+		JButton newnym = new JButton("New Identity");
 		add(newnym);
 		newnym.setBounds(5, 50, 105, 25);
 		newnym.setFont(new Font("SansSerif", Font.BOLD, 12));
 		newnym.addActionListener(e -> torConnector.newnym());
 
 		// Reload button
-		reload = new JButton("Reload");
+		JButton reload = new JButton("Reload");
 		add(reload);
 		reload.setBounds(110, 50, 105, 25);
 		reload.setFont(new Font("SansSerif", Font.BOLD, 12));

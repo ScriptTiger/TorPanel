@@ -17,7 +17,6 @@ set JV=17
 call :Build
 
 echo Build complete
-pause
 exit /b
 
 :Build
