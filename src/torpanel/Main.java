@@ -13,7 +13,7 @@ import java.io.*;
 import java.net.*;
 
 public class Main extends JPanel {
-	private static TorConnector torConnector;
+	private static TorConnector torConnector = new TorConnector();
 	private static JLabel status;
 
 	private Main() {
@@ -55,9 +55,6 @@ public class Main extends JPanel {
 		jFrame.setAlwaysOnTop(true);
 		jFrame.setResizable(false);
 		jFrame.setLocationRelativeTo(null);
-
-		// Construct torConnector
-		torConnector = new TorConnector();
 
 		// Read configuration from torpanel.conf file if it exists
 		try {
