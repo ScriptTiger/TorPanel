@@ -86,8 +86,10 @@ public class Main extends JPanel {
 		// Set the connection status
 		String version = torConnector.getVersion();
 		if (version != null && !version.equals("")) {
+			status.setVisible(false);
 			status.setText("<html><center>"+torConnector.getHost()+":"+torConnector.getPort()+"<br/>"+version+"</html>");
 			status.setForeground(Color.GREEN);
+			status.setVisible(true);
 		}
 	}
 }
