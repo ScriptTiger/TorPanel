@@ -3,7 +3,7 @@
 [![ScriptTiger/TorPanel](https://scripttiger.github.io/images/TorPanel-Interface.png)](https://github.com/ScriptTiger/TorPanel)
 
 # TorPanel
-A small Tor controller widget that stays conveniently on top and out of the way with a minimal footprint while you go about your activities.
+A small Java Tor controller widget that stays conveniently on top and out of the way with a minimal footprint while you go about your activities.
 
 **TorPanel-8.jar**  
 Supported by JDK/JRE 8+ (suitable for most users).
