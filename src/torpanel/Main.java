@@ -9,6 +9,11 @@ import javax.swing.event.*;
 // Main file reader deps
 import java.io.*;
 
+// Main version check deps
+import javax.net.ssl.HttpsURLConnection;
+import java.nio.charset.StandardCharsets;
+import java.util.regex.*;
+
 // TorConnector deps
 import java.net.*;
 
@@ -46,6 +51,8 @@ public class Main extends JPanel {
 	}
 
 	public static void main(String[] args) {
+		String version;
+		boolean check = true;
 
 		// Construct and set up jFrame
 		JFrame jFrame = new JFrame("TorPanel");
@@ -75,6 +82,9 @@ public class Main extends JPanel {
 					case "secret":
 						torConnector.setSecret(tokens[1]);
 						break;
+					case "check":
+						if (tokens[1].toLowerCase().equals("false")) {check = false;}
+						break;
 				}
 			}
 			reader.close();
@@ -84,20 +94,51 @@ public class Main extends JPanel {
 		jFrame.setVisible(true);
 
 		// Set the connection status
-		String version = torConnector.getVersion();
+		version = torConnector.getVersion();
 		if (version != null && !version.equals("")) {
 			status.setVisible(false);
 			status.setText("<html><center>"+torConnector.getHost()+":"+torConnector.getPort()+"<br/>"+version+"</html>");
 			status.setForeground(Color.GREEN);
 			status.setVisible(true);
+
+			// Check for updates if enabled
+			if (check) {
+				try {
+					// Get web page
+					URL url = new URL("https://www.torproject.org/download/tor/");
+					HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+					InputStream responseStream = (InputStream) conn.getContent();
+
+					// Make web page reader
+					BufferedReader reader = new BufferedReader(
+						new InputStreamReader(responseStream, StandardCharsets.UTF_8)
+					);
+
+					// Compare latest version with local version
+					String responseLine;
+					Pattern pattern = Pattern.compile("^.*<td>\\d+\\.\\d+\\.\\d+\\.\\d+</td>.*$");
+					while ((responseLine = reader.readLine()) != null) {
+						Matcher matcher = pattern.matcher(responseLine);
+						if (matcher.matches()) {
+							String local = version.replaceAll("\\s.*$", "");
+							String latest = responseLine
+								.replaceAll(".*<td>", "")
+								.replaceAll("</td>.*$", "");
+							if (!local.equals(latest)) {new popupDialog("Warning", "Your current Tor version is "+local+", but the latest stable version is "+latest+".\n\n"+url.toString(), JOptionPane.WARNING_MESSAGE);}
+							break;
+						}
+					}
+				} catch (Exception err) {}
+			}
 		}
 	}
 }
 
-class ErrorDialog {
-	public ErrorDialog(String msg) {
-		JOptionPane optionPane = new JOptionPane(msg, JOptionPane.ERROR_MESSAGE);
-		JDialog dialog = optionPane.createDialog("Error");
+// Generic popup dialog
+class popupDialog {
+	public popupDialog(String title, String msg, int type) {
+		JOptionPane optionPane = new JOptionPane(msg, type);
+		JDialog dialog = optionPane.createDialog(title);
 		dialog.setAlwaysOnTop(true);
 		dialog.setVisible(true);
 	}
@@ -165,7 +206,7 @@ class TorConnector {
 			tryWriter.println("authenticate \""+secret+"\"");
 			if (!tryReader.readLine().equals("250 OK")) {
 				trySocket.close();
-				new ErrorDialog("Failed to authenticate");
+				new popupDialog("Error", "Failed to authenticate", JOptionPane.ERROR_MESSAGE);
 				return null;
 			} else {
 				socket = trySocket;
@@ -174,7 +215,7 @@ class TorConnector {
 			}
 		
 		} catch (Exception err) {
-			new ErrorDialog(err.getMessage());
+			new popupDialog("Error", err.getMessage(), JOptionPane.ERROR_MESSAGE);
 			return null;
 		}
 		return new SocketInfo(socket, reader, writer);
