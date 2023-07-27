@@ -116,15 +116,15 @@ public class Main extends JPanel {
 
 					// Compare latest version with local version
 					String responseLine;
-					Pattern pattern = Pattern.compile("^.*<td>\\d+\\.\\d+\\.\\d+\\.\\d+</td>.*$");
+					Pattern pattern = Pattern.compile("^.*-windows-i686.tar.gz.*$");
 					while ((responseLine = reader.readLine()) != null) {
 						Matcher matcher = pattern.matcher(responseLine);
 						if (matcher.matches()) {
 							String local = version.replaceAll("\\s.*$", "");
 							String latest = responseLine
-								.replaceAll(".*<td>", "")
-								.replaceAll("</td>.*$", "");
-							if (!local.equals(latest)) {new popupDialog("Warning", "Your current Tor version is "+local+", but the latest stable version is "+latest+".\n\n"+url.toString(), JOptionPane.WARNING_MESSAGE);}
+								.replaceAll("^.*r ", "")
+								.replaceAll("\\)<.*$", "");
+							if (!local.equals(latest)) {new popupDialog("Warning", "Your current Tor version is "+local+", but binaries are available for the latest stable version of "+latest+".\n\n"+url.toString(), JOptionPane.WARNING_MESSAGE);}
 							break;
 						}
 					}
