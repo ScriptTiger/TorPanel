@@ -8,8 +8,8 @@ A small Java Tor controller widget that stays conveniently on top and out of the
 **TorPanel-8.jar**  
 Supported by JDK/JRE 8+ (suitable for most users).
 
-**TorPanel-17.jar**  
-Supported by JDK/JRE 17+.
+**TorPanel-25.jar**  
+Supported by JDK/JRE 25+.
 
 By default, TorPanel will connect to 127.0.0.1:9051, attempt to authenticate to Tor without a password, compare the connected version of Tor to the latest stable version of Tor (Tor Expert Bundle, not Tor Browser), and open a warning dialog if the versions are different. To change the default behavior, you can create a `torpanel.conf` file in the working directory and include key-value pairs for `host`, `port`, and `secret`, delimited by a `=` (i.e. `secret=password`). The key-value pair for `check` is also available, with possible values of `true` or `false` to enable or disable version checking, respectively.
 
