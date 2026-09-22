@@ -123,7 +123,7 @@ public class Main extends JPanel {
 							String local = version.replaceAll("\\s.*$", "");
 							String latest = responseLine
 								.replaceAll("^.*r\\s", "")
-								.replaceAll("\\)<.*$", "");
+								.replaceAll("\\).*$", "");
 							if (!local.equals(latest)) {new popupDialog("Warning", "Your current Tor version is "+local+", but binaries are available for the latest stable version of "+latest+".\n\n"+url.toString(), JOptionPane.WARNING_MESSAGE);}
 							break;
 						}
